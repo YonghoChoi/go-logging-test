@@ -1,11 +1,12 @@
 package main
 
-import (
-	"github.com/YonghoChoi/go-logging-test/cmd/logrustest/logger"
-)
+import "github.com/YonghoChoi/go-logging-test/cmd/logrustest/log"
 
 func main() {
-	logger.Debug("Test", "test")
-	logger.Debug("Test", "test")
-	logger.Debug("Test", "test")
+	l := log.New("debug", "./test.log", 1, 10, 1)
+	l.Debug("Test", "test")
+	l.Debug("Test", "test")
+	l.Debug("Test", "test")
+	l.Debug("Test", "test")
+	l.Debug("Test", "test")
 }
