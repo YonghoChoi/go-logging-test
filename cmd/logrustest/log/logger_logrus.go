@@ -44,13 +44,9 @@ func New(logLevel, fileName string, maxSize, maxBackups, maxAge int) Logger {
 	}
 
 	logger.SetOutput(io.MultiWriter(l, os.Stdout))
-	entry := getLoggerWithRuntimeContext(logger, 3)
-	if entry == nil {
-		panic("log entry is nil")
-	}
 
 	loggerLogrus := new(LoggerLogrus)
-	loggerLogrus.Logger = entry.Logger
+	loggerLogrus.Logger = logger
 	return loggerLogrus
 }
 
@@ -79,58 +75,95 @@ func isLimitLength(size int) bool {
 func (o *LoggerLogrus) Debug(logType string, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
 	if isLimitLength(len(msg)) { // 로그 길이가 너무 길어지는 경우 제한 ( 현재 임의로 1000)
-		o.Logger.Debug(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100]))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100])
 	} else {
-		o.Logger.Debug(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg)
+	}
+
+	entry := getLoggerWithRuntimeContext(o.Logger, 3)
+	if entry != nil {
+		entry.Debug(msg)
+	} else {
+		o.Logger.Debug(msg)
 	}
 }
 
 func (o *LoggerLogrus) Info(logType string, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-
 	if isLimitLength(len(msg)) { // 로그 길이가 너무 길어지는 경우 제한 ( 현재 임의로 1000)
-		o.Logger.Info(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100]))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100])
 	} else {
-		o.Logger.Info(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg)
+	}
+
+	entry := getLoggerWithRuntimeContext(o.Logger, 3)
+	if entry != nil {
+		entry.Info(msg)
+	} else {
+		o.Logger.Info(msg)
 	}
 }
 
 func (o *LoggerLogrus) Warn(logType string, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-
 	if isLimitLength(len(msg)) { // 로그 길이가 너무 길어지는 경우 제한 ( 현재 임의로 1000)
-		o.Logger.Warn(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100]))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100])
 	} else {
-		o.Logger.Warn(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg)
+	}
+
+	entry := getLoggerWithRuntimeContext(o.Logger, 3)
+	if entry != nil {
+		entry.Warn(msg)
+	} else {
+		o.Logger.Warn(msg)
 	}
 }
 
 func (o *LoggerLogrus) Error(logType string, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-
 	if isLimitLength(len(msg)) { // 로그 길이가 너무 길어지는 경우 제한 ( 현재 임의로 1000)
-		o.Logger.Error(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100]))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100])
 	} else {
-		o.Logger.Error(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg)
 	}
-}
 
-func (o *LoggerLogrus) Panic(logType string, format string, args ...interface{}) {
-	msg := fmt.Sprintf(format, args...)
-
-	if isLimitLength(len(msg)) { // 로그 길이가 너무 길어지는 경우 제한 ( 현재 임의로 1000)
-		o.Logger.Panic(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100]))
+	entry := getLoggerWithRuntimeContext(o.Logger, 3)
+	if entry != nil {
+		entry.Error(msg)
 	} else {
-		o.Logger.Panic(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg))
+		o.Logger.Error(msg)
 	}
 }
 
 func (o *LoggerLogrus) Fatal(logType string, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-
 	if isLimitLength(len(msg)) { // 로그 길이가 너무 길어지는 경우 제한 ( 현재 임의로 1000)
-		o.Logger.Fatal(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100]))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100])
 	} else {
-		o.Logger.Fatal(fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg))
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg)
+	}
+
+	entry := getLoggerWithRuntimeContext(o.Logger, 3)
+	if entry != nil {
+		entry.Fatal(msg)
+	} else {
+		o.Logger.Fatal(msg)
+	}
+}
+
+func (o *LoggerLogrus) Panic(logType string, format string, args ...interface{}) {
+	msg := fmt.Sprintf(format, args...)
+	if isLimitLength(len(msg)) { // 로그 길이가 너무 길어지는 경우 제한 ( 현재 임의로 1000)
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"log message size over. msg : %s ... \"}", logType, msg[0:100])
+	} else {
+		msg = fmt.Sprintf("{\"type\": \"%s\", \"msg\": \"%s\"}", logType, msg)
+	}
+
+	entry := getLoggerWithRuntimeContext(o.Logger, 3)
+	if entry != nil {
+		entry.Panic(msg)
+	} else {
+		o.Logger.Panic(msg)
 	}
 }
