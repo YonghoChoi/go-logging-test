@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
 	"os"
+	"runtime"
 )
 
 func main() {
@@ -30,7 +33,7 @@ func main() {
 		Compress:   true, // disabled by default
 	}
 
-	logger.SetOutput(l)
+	logger.SetOutput(io.MultiWriter(l, os.Stdout))
 	logger.Debugf("test")
 	logger.Debugf("test")
 	logger.Debugf("test")
@@ -40,4 +43,20 @@ func main() {
 	}
 
 	logger.Debugf("test")
+
+	entry := getLoggerWithRuntimeContext(logger, 3)
+	entry.Debug(fmt.Sprint("test"))
+}
+
+func getLoggerWithRuntimeContext(logger *logrus.Logger, skip int) *logrus.Entry {
+	if pc, file, line, ok := runtime.Caller(skip); ok {
+		funname := runtime.FuncForPC(pc).Name()
+		logFields := logrus.Fields{}
+		logFields["file"] = file
+		logFields["func"] = funname
+		logFields["line"] = line
+
+		return logger.WithFields(logFields)
+	}
+	return nil
 }
