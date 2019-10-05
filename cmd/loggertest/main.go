@@ -1,6 +1,6 @@
 package main
 
-import "github.com/YonghoChoi/go-logging-test/cmd/logrustest/log"
+import "github.com/YonghoChoi/go-logging-test/cmd/loggertest/log"
 
 func main() {
 	l := log.New("debug", "./test.log", 1, 10, 1)
