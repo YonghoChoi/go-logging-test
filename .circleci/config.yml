@@ -28,4 +28,6 @@ jobs:
             go list -m all
             cd cmd/loggertest
             go build
+            chmod +x loggertest
+            ./loggertest
             ls -l
